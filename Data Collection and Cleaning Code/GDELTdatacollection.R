@@ -7,7 +7,8 @@ library(tidyverse)
 library(bigrquery)
 
 # bigrquery setup
-bq_auth(email = "faiz.essa@gmail.com")
+# authorize bigquery below if not authorized
+# bq_auth(email = "faiz.essa@gmail.com")
 billing <- "whatsappgdelt"
 
 # INDIA 
@@ -15,12 +16,12 @@ billing <- "whatsappgdelt"
 # indian districts. We will focus on ``protest" events.
 # SQL query
 sql <- 
-  "SELECT ActionGeo_ADM1Code, SQLDATE, EventCode, COUNT(*) 
+  "SELECT ActionGeo_ADM1Code, SQLDATE, COUNT(*) 
 FROM `gdelt-bq.gdeltv2.events` 
 WHERE EventRootCode = '14' 
 AND ActionGeo_CountryCode = 'IN'
 AND Year >= 2015
-GROUP BY ActionGeo_ADM1Code, SQLDATE, EventCode
+GROUP BY ActionGeo_ADM1Code, SQLDATE
 "
 
 # data import

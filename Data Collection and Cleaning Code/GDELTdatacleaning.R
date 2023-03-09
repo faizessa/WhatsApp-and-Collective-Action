@@ -11,154 +11,57 @@ library(lubridate)
 
 # INDIA
 # data import 
-raw_data <- readRDS("Data/GDELT/raw_gdelt_data.rds")
+raw_data <- readRDS("Data/GDELT/RawGDELT_IndiaStates.rds")
+WhatsAppInterest <- read_csv("Data/WhatsAppInterest.csv")
 
 # renaming variables and fixing dates
-gdelt_data_1_16 <- raw_data %>%
-  rename(GAULADM2Code = ActionGeo_ADM2Code,
+gdelt_data <- raw_data %>%
+  rename(GAULADM1Code = ActionGeo_ADM1Code,
          count = f0_) %>%
-  mutate(date = as.Date(as.character(SQLDATE), "%Y%m%d"))
+  mutate(date = as.Date(as.character(SQLDATE), "%Y%m%d")) %>%
+  select(!SQLDATE)
 
 # CONSTRUCTING PANEL
 
 # creates list of dates from 2013-2023
-dates <- seq.POSIXt(ISOdate(2013,1,1),ISOdate(2023,1,1), by="day")
+dates <- seq.POSIXt(ISOdate(2015,1,1),ISOdate(2023,1,1), by="day")
 
 # creates list of unique adm2 codes
-GAULADM2Code <- gdelt_data_1_16 %>%
-  distinct(GAULADM2Code)
-
-# creates list of unique event types
-EventCode <- gdelt_data_1_16 %>%
-  distinct(EventCode)
+GAULADM1Code <- gdelt_data %>%
+  distinct(GAULADM1Code)
 
 # creating `blank` panel
 dates <- data.frame(date=dates) %>%
   mutate(date = as.Date(date)) %>%
-  crossing(GAULADM2Code) %>%
-  crossing(EventCode) %>%
-  arrange(GAULADM2Code, EventCode, date)
+  crossing(GAULADM1Code) %>%
+  arrange(GAULADM1Code, date)
 
 # merging to add protest counts
-gdelt_panel_1_16 <- gdelt_data_1_16 %>%
-  select(date, GAULADM2Code, EventCode, count) %>%
-  right_join(dates, by = c("date", "GAULADM2Code", "EventCode")) %>%
-  mutate(count = ifelse(is.na(count), 0, count))
+gdelt_panel <- gdelt_data %>%
+  right_join(dates, by = c("date", "GAULADM1Code")) %>%
+  mutate(count = ifelse(is.na(count), 0, count)) %>%
+  relocate(date, .before = "count") %>%
+  arrange(GAULADM1Code, date)
 
-# formatting as panel
-gdelt_panel_1_16 <- gdelt_panel_1_16 %>%
-  pivot_wider(names_from = EventCode, values_from = count) %>%
-  arrange(GAULADM2Code, date)
+# aggregate panel to week level
+gdelt_panel_weekly <- gdelt_panel %>%
+  mutate(week = week(date), year = year(date)) %>%
+  group_by(GAULADM1Code, year, week) %>%
+  summarize(protest_count = sum(count)) %>%
+  ungroup() %>%
+  group_by(year, week) %>%
+  mutate(time = cur_group_id()) %>%
+  ungroup() %>% 
+  relocate(time, .before = "protest_count")
 
-# creating variables for analysis
-gdelt_panel_1_16 <- gdelt_panel_1_16 %>%
-  rename(c141 = "141",
-         c145 = "145",
-         c143 = "143", 
-         c144 = "144",
-         c140 = "140",
-         c1411 = "1411",
-         c142 = "142",
-         c1412 = "1412", 
-         c1413 = "1413",
-         c1431 = "1431",
-         c1414 = "1414") %>%
-  rowwise() %>%
-  mutate(total_protests = sum(c141, c145, c143, c144, c140, c1411,
-                              c142, c1412, c1413, c1431, c1414),
-         demonstration = sum(c141, c1411, c1412, c1413, c1414),
-         hunger_strike = c142,
-         strike = sum(c143, c1431),
-         violent = c145,
-         non_violent = sum(c141, c143, c144, c140, c1411,
-                           c142, c1412, c1413, c1431, c1414)) 
-gdelt_panel_1_16 <- gdelt_panel_1_16 %>%
-  mutate(year = year(date),
-         month = month(date))
+# merging in whatsapp data
+gtrends_es_panel <- WhatsAppInterest %>%
+  select(GAULADM1Code, WhatsAppInterest) %>%
+  right_join(gdelt_panel_weekly, by = "GAULADM1Code") %>%
+  filter(!is.na(WhatsAppInterest))
 
-gdelt_panel_1_16 <- gdelt_panel_1_16 %>%
-  mutate(forwarding_rule = ifelse(date >= "2018-07-18", 1, 0))
+# saving data 
+write_csv(gtrends_es_panel, "Data/GDELT/gtrends_es_panel.csv")
 
-# file to large to commit to git, stored in dropbox folder
-write_csv(gdelt_panel_1_16,
-          "Users/faizessa/Dropbox/WhatsApp and Conflict/Data/GDELT/gdelt_panel_1_16.csv", 
-          na = "")
-
-# ACROSS COUNTRIES 
-rm(list = ls())
-
-# data import 
-raw_data <- readRDS("Data/GDELT/raw_gdelt_data_country.rds")
-
-# renaming variables and fixing dates
-gdelt_data_1_16 <- raw_data %>%
-  rename(country = ActionGeo_CountryCode,
-         count = f0_) %>%
-  mutate(date = as.Date(as.character(SQLDATE), "%Y%m%d"))
-
-# CONSTRUCTING PANEL
-
-# creates list of dates from 2013-2023
-dates <- seq.POSIXt(ISOdate(2013,1,1),ISOdate(2023,1,1), by="day")
-
-# countrycodes
-countrycodes <- gdelt_data_1_16 %>%
-  distinct(country)
-
-# creates list of unique event types
-EventCode <- gdelt_data_1_16 %>%
-  distinct(EventCode)
-
-# creating `blank` panel
-dates <- data.frame(date=dates) %>%
-  mutate(date = as.Date(date)) %>%
-  crossing(countrycodes) %>%
-  crossing(EventCode) %>%
-  arrange(country, EventCode, date)
-
-# merging to add protest counts
-gdelt_panel_1_16 <- gdelt_data_1_16 %>%
-  select(date, country, EventCode, count) %>%
-  right_join(dates, by = c("date", "country", "EventCode")) %>%
-  mutate(count = ifelse(is.na(count), 0, count))
-
-# formatting as panel
-gdelt_panel_1_16 <- gdelt_panel_1_16 %>%
-  pivot_wider(names_from = EventCode, values_from = count) %>%
-  arrange(country, date)
-
-# creating variables for analysis
-gdelt_panel_1_16 <- gdelt_panel_1_16 %>%
-  rename(c141 = "141",
-         c145 = "145",
-         c143 = "143", 
-         c144 = "144",
-         c140 = "140",
-         c1411 = "1411",
-         c142 = "142",
-         c1412 = "1412", 
-         c1413 = "1413",
-         c1431 = "1431",
-         c1414 = "1414") %>%
-  rowwise() %>%
-  mutate(total_protests = sum(c141, c145, c143, c144, c140, c1411,
-                              c142, c1412, c1413, c1431, c1414),
-         demonstration = sum(c141, c1411, c1412, c1413, c1414),
-         hunger_strike = c142,
-         strike = sum(c143, c1431),
-         violent = c145,
-         non_violent = sum(c141, c143, c144, c140, c1411,
-                           c142, c1412, c1413, c1431, c1414)) 
-
-gdelt_panel_1_16 <- gdelt_panel_1_16 %>%
-  mutate(year = year(date),
-         month = month(date))
-
-gdelt_panel_1_16 <- gdelt_panel_1_16 %>%
-  mutate(forwarding_rule = ifelse(date >= "2018-07-18", 1, 0))
-
-# file to large to commit to git, stored in dropbox folder
-write_csv(gdelt_panel_1_16,
-          "Users/faizessa/Dropbox/WhatsApp and Conflict/Data/GDELT/gdelt_panel_countries.csv", 
-          na = "")
-
+# clearing
+rm(list=ls())

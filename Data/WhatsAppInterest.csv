@@ -1,37 +1,37 @@
-Region,WhatsAppInterest
-Tamil Nadu,100
-Puducherry,99
-Gujarat,94
-Chhattisgarh,90
-Odisha,88
-Madhya Pradesh,87
-Jammu and Kashmir,86
-Himachal Pradesh,86
-Telangana,85
-Kerala,85
-Chandigarh,85
-Maharashtra,82
-Bihar,82
-Andhra Pradesh,80
-Rajasthan,78
-Uttar Pradesh,76
-Punjab,76
-Daman and Diu,72
-Haryana,70
-Jharkhand,69
-Andaman and Nicobar Islands,69
-Karnataka,69
-Delhi,68
-West Bengal,67
-Assam,67
-Dadra and Nagar Haveli,66
-Uttarakhand,66
-Mizoram,62
-Nagaland,49
-Goa,48
-Tripura,47
-Sikkim,47
-Manipur,45
-Meghalaya,44
-Arunachal Pradesh,43
-Lakshadweep,
+Region,GAULADM1Code,WhatsAppInterest
+Tamil Nadu,IN25,100
+Puducherry,IN22,99
+Gujarat,IN09,94
+Chhattisgarh,IN37,90
+Odisha,IN21,88
+Madhya Pradesh,IN35,87
+Jammu and Kashmir,IN12,86
+Himachal Pradesh,IN11,86
+Telangana,IN40,85
+Kerala,IN13,85
+Chandigarh,IN05,85
+Maharashtra,IN16,82
+Bihar,IN34,82
+Andhra Pradesh,IN02,80
+Rajasthan,IN24,78
+Uttar Pradesh,IN36,76
+Punjab,IN23,76
+Daman and Diu,,72
+Haryana,IN10,70
+Jharkhand,IN38,69
+Andaman and Nicobar Islands,IN01,69
+Karnataka,IN19,69
+Delhi,IN07,68
+West Bengal,IN28,67
+Assam,IN03,67
+Dadra and Nagar Haveli,IN42,66
+Uttarakhand,IN39,66
+Mizoram,IN31,62
+Nagaland,IN20,49
+Goa,IN33,48
+Tripura,IN26,47
+Sikkim,IN29,47
+Manipur,IN17,45
+Meghalaya,IN18,44
+Arunachal Pradesh,IN30,43
+Lakshadweep,IN14,
