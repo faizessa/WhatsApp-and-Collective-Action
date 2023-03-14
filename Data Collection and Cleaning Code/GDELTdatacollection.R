@@ -16,12 +16,12 @@ billing <- "whatsappgdelt"
 # indian districts. We will focus on ``protest" events.
 # SQL query
 sql <- 
-  "SELECT ActionGeo_ADM1Code, SQLDATE, COUNT(*) 
+  "SELECT ActionGeo_ADM1Code, EventRootCode, SQLDATE, COUNT(*) 
 FROM `gdelt-bq.gdeltv2.events` 
-WHERE EventRootCode = '14' 
-AND ActionGeo_CountryCode = 'IN'
+WHERE (EventRootCode = '14' OR EventRootCode = '18' OR EventRootCode = '19')
+AND (ActionGeo_CountryCode = 'IN')
 AND Year >= 2015
-GROUP BY ActionGeo_ADM1Code, SQLDATE
+GROUP BY ActionGeo_ADM1Code, EventRootCode, SQLDATE
 "
 
 # data import
