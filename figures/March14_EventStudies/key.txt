@@ -1,0 +1,20 @@
+The files are named like this:
+"[weekly/monthly]_[dependent variable]_[event time]"
+
+Event time refers to the month/week the event occurs in the data:
+
+Weekly Events:
+187 - Labelling forwarded messages (10th July 2018)
+188 - WhatsApp forwards can be sent to only 5 chats at a time in India and 20 chats everywhere else (18th July 2018)
+216 - WhatsApp forwards are limited to 5 groups worldwide (21 Jan 2019)
+226 - WhatsApp launched a fact-checking service to combat fake news (2nd Apr 2019)
+    - Privacy settings to control who has permission to add people (3rd Apr 2019)
+280 - WhatsApp messages that have already been forwarded by 5 or more people can only be forwarded to 1 chat (7 Apr 2020)
+
+Monthly Events
+43 - Labelling forwarded messages (10th July 2018)
+     WhatsApp forwards can be sent to only 5 chats at a time in India and 20 chats everywhere else (18th July 2018)
+49 - WhatsApp forwards are limited to 5 groups worldwide (21 Jan 2019)
+52 - WhatsApp launched a fact-checking service to combat fake news (2nd Apr 2019)
+   - Privacy settings to control who has permission to add people (3rd Apr 2019)
+64 - WhatsApp messages that have already been forwarded by 5 or more people can only be forwarded to 1 chat (7 Apr 2020)

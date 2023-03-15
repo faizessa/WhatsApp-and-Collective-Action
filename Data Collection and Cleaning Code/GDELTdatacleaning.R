@@ -102,7 +102,7 @@ gtrends_es_panel_monthly <- WhatsAppInterest %>%
 
 # saving data 
 write_csv(gtrends_es_panel, "Data/GDELT/gtrends_es_panel.csv")
-write_csv(gtrends_es_panel_monthly, "Data/GDELT/gtrends_es_panel.csv")
+write_csv(gtrends_es_panel_monthly, "Data/GDELT/gtrends_es_panel_monthly.csv")
 
 # clearing
 rm(list=ls())
